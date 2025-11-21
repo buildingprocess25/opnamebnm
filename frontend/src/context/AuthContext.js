@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }) => {
         });
         return {
           success: false,
-          message: `Sesi Anda telah berakhir.\nLogin hanya 06.00–24.00 WIB.\nSekarang pukul ${currentTime} WIB.`,
+          message: `Sesi Anda telah berakhir.\nLogin hanya 06.00–18.00 WIB.\nSekarang pukul ${currentTime} WIB.`,
         };
       }
 
