@@ -47,19 +47,19 @@ const OpnameForm = ({ onBack, selectedStore }) => {
     if (selectedStore?.kode_toko) {
       setLoading(true);
       // Fetch daftar no_ulok untuk kode_toko ini
-       fetch(`${API_BASE_URL}/api/uloks?kode_toko=${selectedStore.kode_toko}`)
-         .then((res) => res.json())
-         .then((data) => {
-           setUloks(data);
-           if (data.length === 1) {
-             setSelectedUlok(data[0]);
-           }
-           setLoading(false);
-         })
-         .catch((err) => {
-           console.error("Gagal mengambil daftar no_ulok:", err);
-           setLoading(false);
-         });
+      fetch(`${API_BASE_URL}/api/uloks?kode_toko=${selectedStore.kode_toko}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setUloks(data);
+          if (data.length === 1) {
+            setSelectedUlok(data[0]);
+          }
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("Gagal mengambil daftar no_ulok:", err);
+          setLoading(false);
+        });
     }
   }, [selectedStore]);
 
@@ -69,14 +69,17 @@ const OpnameForm = ({ onBack, selectedStore }) => {
       setLoading(true);
 
       const base =
-       `${API_BASE_URL}/api/opname?kode_toko=${encodeURIComponent(selectedStore.kode_toko)}` +
-        `&no_ulok=${encodeURIComponent(selectedUlok)}`;
+        `${API_BASE_URL}/api/opname?kode_toko=${encodeURIComponent(
+          selectedStore.kode_toko
+        )}` + `&no_ulok=${encodeURIComponent(selectedUlok)}`;
 
       // normalisasi lingkup jika ada
       const lk = String(selectedLingkup || "")
         .trim()
         .toUpperCase();
-const withLingkup = lk ? base + `&lingkup=${encodeURIComponent(lk)}` : null;
+      const withLingkup = lk
+        ? base + `&lingkup=${encodeURIComponent(lk)}`
+        : null;
 
       const mapItems = (data, lkUsed) => {
         const items = (data || []).map((task, index) => {
@@ -162,8 +165,6 @@ const withLingkup = lk ? base + `&lingkup=${encodeURIComponent(lk)}` : null;
       })();
     }
   }, [selectedStore, selectedUlok, selectedLingkup, user]);
-
-  
 
   const handleVolumeAkhirChange = (id, value) => {
     setOpnameItems((prevItems) =>
@@ -253,7 +254,6 @@ const withLingkup = lk ? base + `&lingkup=${encodeURIComponent(lk)}` : null;
     });
   };
 
-
   const handleFileUpload = async (itemId, file) => {
     if (!file) return;
     setOpnameItems((prev) =>
@@ -300,7 +300,7 @@ const withLingkup = lk ? base + `&lingkup=${encodeURIComponent(lk)}` : null;
       return;
     }
 
-    // 🔹 Validasi ekstra khusus pekerjaan manuals
+    // 🔹 Validasi ekstra khusus pekerjaan manual
     if (itemToSubmit.isManual) {
       const requiredFields = [
         ["kategori_pekerjaan", "Kategori pekerjaan harus diisi."],
@@ -353,22 +353,22 @@ const withLingkup = lk ? base + `&lingkup=${encodeURIComponent(lk)}` : null;
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message);
-setOpnameItems((prev) =>
-  prev.map((item) =>
-    item.id === itemId
-      ? {
-          ...item,
-          isSubmitting: false,
-          isSubmitted: true,
-          isManual: item.isManual || itemToSubmit.isManual || false,
-          isManualDraft: false,
-          approval_status: "Pending",
-          submissionTime: result.tanggal_submit,
-          item_id: result.item_id,
-        }
-      : item
-  )
-);
+      setOpnameItems((prev) =>
+        prev.map((item) =>
+          item.id === itemId
+            ? {
+                ...item,
+                isSubmitting: false,
+                isSubmitted: true,
+                isManual: item.isManual || itemToSubmit.isManual || false,
+                isManualDraft: false,
+                approval_status: "Pending",
+                submissionTime: result.tanggal_submit,
+                item_id: result.item_id,
+              }
+            : item
+        )
+      );
     } catch (error) {
       alert(`Error: ${error.message}`);
       setOpnameItems((prev) =>
