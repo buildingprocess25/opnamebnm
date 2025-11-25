@@ -300,7 +300,7 @@ const withLingkup = lk ? base + `&lingkup=${encodeURIComponent(lk)}` : null;
       return;
     }
 
-    // 🔹 Validasi ekstra khusus pekerjaan manual
+    // 🔹 Validasi ekstra khusus pekerjaan manuals
     if (itemToSubmit.isManual) {
       const requiredFields = [
         ["kategori_pekerjaan", "Kategori pekerjaan harus diisi."],
