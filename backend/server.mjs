@@ -751,11 +751,35 @@ app.get("/api/opname", async (req, res) => {
           approval_status: matched?.approval_status || "Not Submitted",
           submissionTime: matched?.tanggal_submit || null,
           foto_url: matched?.foto_url || null,
-          catatan: matched?.catatan || "", // ⬅️ penting
+          catatan: matched?.catatan || "",
         };
       });
 
-    return res.status(200).json(tasks);
+    // 🔹 Pekerjaan manual: submission yang tidak punya pasangan di data_rab
+    const extraManualTasks = submittedList.map((s) => ({
+      kategori_pekerjaan: "PEKERJAAN TAMBAHAN",
+      lingkup_pekerjaan: s.lingkup || lingkup || "",
+      jenis_pekerjaan: s.jenis || "",
+      vol_rab: s.vol_akhir || "", // tidak ada RAB → anggap sama dengan volume akhir
+      satuan: s.satuan || "",
+      harga_material: s.harga_material || 0,
+      harga_upah: s.harga_upah || 0,
+      rab_key: s.rab_key || "",
+      item_id: s.item_id || null,
+      volume_akhir: s.vol_akhir || "",
+      selisih: s.selisih || "",
+      isSubmitted: true,
+      approval_status: s.approval_status || "Pending",
+      submissionTime: s.tanggal_submit || null,
+      foto_url: s.foto_url || null,
+      catatan: s.catatan || "",
+      isManual: true,
+    }));
+
+    const allTasks = [...tasks, ...extraManualTasks];
+
+    return res.status(200).json(allTasks);
+
   } catch (error) {
     console.error("Error di /api/opname:", error);
     return res.status(500).json({ message: "Terjadi kesalahan pada server." });
